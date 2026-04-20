@@ -51,10 +51,10 @@ Every error response uses the same shape: `{"status", "error", "message", ...con
 ### From the terminal
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/AqeelDev/smart-campus-api.git
 cd smart-campus-api
 mvn clean package
-mvn exec:java
+mvn org.codehaus.mojo:exec-maven-plugin:3.1.0:java
 ```
 
 The console prints:
