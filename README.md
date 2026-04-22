@@ -31,10 +31,10 @@ It models the core data of a university "Smart Campus" — **Rooms**, **Sensors*
 | Successful create                                | 201    | JSON resource + `Location` header |
 | Successful delete                                | 204    | empty                             |
 | Missing resource                                 | 404    | JSON error                        |
-| `Content-Type` not `application/json` on POST    | 415    | empty (JAX-RS default)            |
+| `Content-Type` not `application/json` on POST    | 415    | JSON error                        |
 | Referenced `roomId` doesn't exist                | 422    | JSON error                        |
 | Delete room that still has sensors               | 409    | JSON error                        |
-| POST reading to a `MAINTENANCE` / `OFFLINE` sensor | 403  | JSON error                        |
+| POST reading to a `MAINTENANCE` sensor           | 403    | JSON error                        |
 | Unexpected server error                          | 500    | sanitised JSON (no stack trace)   |
 
 Every error response uses the same shape: `{"status", "error", "message", ...context}`.
@@ -135,7 +135,7 @@ curl -s http://localhost:8080/api/v1/sensors/TEMP-001
 curl -i -X DELETE http://localhost:8080/api/v1/rooms/LIB-301
 ```
 
-### 8. Wrong content type (**415 Unsupported Media Type** — JAX-RS default)
+### 8. Wrong content type (**415 Unsupported Media Type**)
 ```bash
 curl -i -X POST -H "Content-Type: text/plain" --data "hi" \
   http://localhost:8080/api/v1/sensors
@@ -145,7 +145,7 @@ curl -i -X POST -H "Content-Type: text/plain" --data "hi" \
 
 ## Report — answers to the specification questions
 
-*(Each task's mark is split 50% code / 30% video / 20% written answer — the answers below are worth that 20%.)*
+A typeset PDF copy of this section is also available at [`REPORT.pdf`](./REPORT.pdf).
 
 ### Part 1.1 — JAX-RS resource lifecycle & concurrency
 

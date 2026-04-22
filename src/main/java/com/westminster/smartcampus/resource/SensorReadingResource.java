@@ -34,8 +34,9 @@ public class SensorReadingResource {
 
     @POST
     public Response append(SensorReading incoming, @Context UriInfo uriInfo) {
-        if ("MAINTENANCE".equalsIgnoreCase(parentSensor.getStatus())
-                || "OFFLINE".equalsIgnoreCase(parentSensor.getStatus())) {
+        // Spec Part 5.3: a sensor marked MAINTENANCE is physically disconnected
+        // and must not accept new readings. Map to HTTP 403 Forbidden.
+        if ("MAINTENANCE".equalsIgnoreCase(parentSensor.getStatus())) {
             throw new SensorUnavailableException(parentSensor.getId(), parentSensor.getStatus());
         }
 
