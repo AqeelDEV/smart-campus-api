@@ -222,3 +222,5 @@ smart-campus-api/
     └── filter/
         └── LoggingFilter.java                              # request + response
 ```
+
+🔗 Demo Link: [https://drive.google.com/file/d/1YiPRoPUXUn4C5z4A5CdWDgEz4O9qJY9y/view?usp=sharing](url)
