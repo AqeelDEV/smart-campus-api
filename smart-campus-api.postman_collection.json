@@ -1,0 +1,185 @@
+{
+  "info": {
+    "name": "Smart Campus API — Demo Collection",
+    "description": "Ordered demo calls matching the 5COSC022W video-demo script. Import into Postman, then run top to bottom.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base", "value": "http://localhost:8080/api/v1" }
+  ],
+  "item": [
+    {
+      "name": "Part 1.2 — Discovery (HATEOAS)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{base}}/", "host": ["{{base}}"], "path": [""] }
+      }
+    },
+    {
+      "name": "Part 2.1a — List rooms (seeded)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{base}}/rooms", "host": ["{{base}}"], "path": ["rooms"] }
+      }
+    },
+    {
+      "name": "Part 2.1b — Create room (201 + Location)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"LAB-101\",\n  \"name\": \"Physics Lab\",\n  \"capacity\": 30\n}"
+        },
+        "url": { "raw": "{{base}}/rooms", "host": ["{{base}}"], "path": ["rooms"] }
+      }
+    },
+    {
+      "name": "Part 2.1c — Get room by new ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{base}}/rooms/LAB-101", "host": ["{{base}}"], "path": ["rooms", "LAB-101"] }
+      }
+    },
+    {
+      "name": "Part 2.2a — Delete room (204)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": { "raw": "{{base}}/rooms/LAB-101", "host": ["{{base}}"], "path": ["rooms", "LAB-101"] }
+      }
+    },
+    {
+      "name": "Part 2.2b — Delete room with sensors (409)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": { "raw": "{{base}}/rooms/LIB-301", "host": ["{{base}}"], "path": ["rooms", "LIB-301"] }
+      }
+    },
+    {
+      "name": "Part 3.1a — POST sensor with BAD roomId (422)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"BAD-1\",\n  \"type\": \"CO2\",\n  \"status\": \"ACTIVE\",\n  \"roomId\": \"NOPE\"\n}"
+        },
+        "url": { "raw": "{{base}}/sensors", "host": ["{{base}}"], "path": ["sensors"] }
+      }
+    },
+    {
+      "name": "Part 3.1b — POST sensor with VALID roomId (201)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"OCC-001\",\n  \"type\": \"Occupancy\",\n  \"status\": \"ACTIVE\",\n  \"roomId\": \"LIB-301\"\n}"
+        },
+        "url": { "raw": "{{base}}/sensors", "host": ["{{base}}"], "path": ["sensors"] }
+      }
+    },
+    {
+      "name": "Part 3.2a — Filter ?type=CO2",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/sensors?type=CO2",
+          "host": ["{{base}}"],
+          "path": ["sensors"],
+          "query": [{ "key": "type", "value": "CO2" }]
+        }
+      }
+    },
+    {
+      "name": "Part 3.2b — Filter ?type=Temperature",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/sensors?type=Temperature",
+          "host": ["{{base}}"],
+          "path": ["sensors"],
+          "query": [{ "key": "type", "value": "Temperature" }]
+        }
+      }
+    },
+    {
+      "name": "Part 4.1 — GET readings (nested sub-resource)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/sensors/TEMP-001/readings",
+          "host": ["{{base}}"],
+          "path": ["sensors", "TEMP-001", "readings"]
+        }
+      }
+    },
+    {
+      "name": "Part 4.2a — POST reading (201, side-effect)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"value\": 22.5\n}" },
+        "url": {
+          "raw": "{{base}}/sensors/TEMP-001/readings",
+          "host": ["{{base}}"],
+          "path": ["sensors", "TEMP-001", "readings"]
+        }
+      }
+    },
+    {
+      "name": "Part 4.2b — GET sensor (currentValue updated)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base}}/sensors/TEMP-001",
+          "host": ["{{base}}"],
+          "path": ["sensors", "TEMP-001"]
+        }
+      }
+    },
+    {
+      "name": "Part 5.1a — Register MAINTENANCE sensor",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"MAINT-1\",\n  \"type\": \"CO2\",\n  \"status\": \"MAINTENANCE\",\n  \"roomId\": \"LIB-301\"\n}"
+        },
+        "url": { "raw": "{{base}}/sensors", "host": ["{{base}}"], "path": ["sensors"] }
+      }
+    },
+    {
+      "name": "Part 5.1b — POST reading to MAINTENANCE (403)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"value\": 99.9\n}" },
+        "url": {
+          "raw": "{{base}}/sensors/MAINT-1/readings",
+          "host": ["{{base}}"],
+          "path": ["sensors", "MAINT-1", "readings"]
+        }
+      }
+    },
+    {
+      "name": "Part 5.2 — Trigger 500 (null body -> NPE -> clean JSON 500)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "null" },
+        "url": { "raw": "{{base}}/sensors", "host": ["{{base}}"], "path": ["sensors"] }
+      }
+    }
+  ]
+}
